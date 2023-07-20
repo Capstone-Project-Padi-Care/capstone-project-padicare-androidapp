@@ -76,4 +76,7 @@
     <string name="email_username">Email or Username</string>
     <string name="scan_penyakit_padi">Scan Penyakit Padi</string>
     <string name="search">Search : </string>
+    <string name="updated">Updated</string>
+    <string name="title_post">Title Post</string>
+    <string name="masukkan_text">Masukkan text</string>
 </resources>

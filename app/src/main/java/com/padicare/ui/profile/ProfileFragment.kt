@@ -60,6 +60,7 @@ class ProfileFragment : Fragment() {
 
         binding.menuLogOut.setOnClickListener {
             viewModel.logout(token)
+            activity?.finish()
         }
 
 
@@ -83,8 +84,9 @@ class ProfileFragment : Fragment() {
             viewModel.saveThemeSetting(isChecked)
         }
 
+
         viewModel.successMessage.observe(requireActivity(), {
-            Toast.makeText(requireContext(), it , Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), it , Toast.LENGTH_SHORT).show()
         })
 
         viewModel.isLoading.observe(requireActivity(), {

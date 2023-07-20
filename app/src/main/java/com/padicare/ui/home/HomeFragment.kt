@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,9 +26,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import com.padicare.databinding.FragmentHomeBinding
+import com.padicare.model.PostItem
 import com.padicare.repository.CredentialPreferences
 import com.padicare.ui.ViewModelFactory
 import com.padicare.ui.addPost.AddPostActivity
+import com.padicare.ui.post.PostActivity
 import com.padicare.ui.result.ResultActivity
 import com.padicare.ui.search.SearchActivity
 import com.padicare.utils.convertDateTimeToTime
@@ -44,6 +47,7 @@ class HomeFragment : Fragment() {
     private lateinit var currentPhotoPath: String
     private lateinit var token: String
     private lateinit var imageUri: String
+    private  var postItem: PostItem? = null
 
     private lateinit var binding : FragmentHomeBinding
 
@@ -75,7 +79,7 @@ class HomeFragment : Fragment() {
                     .into(binding.postImage)
                 binding.postDate.text = convertDateTimeToTime(it.createdAt).toString()
                 binding.postTitle.text = it.title
-
+                postItem = PostItem(it.photoUrl, it.createdAt, it.like, it.description, it.id, it.title, it.userId, it.user, it.views, it.updatedAt)
             }
         })
 
@@ -93,22 +97,33 @@ class HomeFragment : Fragment() {
 
 
 
+
         binding.searchView
             .getEditText()
             .setOnEditorActionListener { v, actionId, event ->
                 val query = binding.searchView.getText().toString()
-                val intent = Intent(activity, SearchActivity::class.java)
-                intent.putExtra("search", binding.searchView.text.toString())
                 if(query != "") {
-                    startActivity(intent)
+                    val intentSearch = Intent(activity, SearchActivity::class.java)
+                    intentSearch.putExtra("search", query)
+                    startActivity(intentSearch)
+                    false
                 } else {
                     Toast.makeText(requireContext(), "Masukkan teks terlebih dahulu", Toast.LENGTH_SHORT).show()
+                    false
                 }
                 binding.searchView.hide()
                 binding.topBar.visibility = MaterialCardView.VISIBLE
 
                 false
             }
+        binding.newsBanner.setOnClickListener {
+            if(postItem != null) {
+                val intent = Intent(binding.root.context, PostActivity::class.java)
+                intent.putExtra("POST", postItem)
+                binding.root.context.startActivity(intent)
+
+            }
+        }
 
         return root
     }
@@ -184,10 +199,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.getUser().observe(requireActivity(), {
-            homeViewModel.getUserFromApi(it.userId)
-            token = it.token
-        })
+        homeViewModel.getUser().observe(requireActivity()) {
+            if (it.token != null) {
+                homeViewModel.getUserFromApi(it.userId)
+                token = it.token
+
+            }
+        }
         homeViewModel.userData.observe(requireActivity(), {
             binding.username.text = it?.username
             if(it?.photoUrl != null) {
@@ -213,7 +231,7 @@ class HomeFragment : Fragment() {
 
         homeViewModel.errorMessage.observe(requireActivity(), {
             it.getContextIfNotHandled()?.let{ errorMsg ->
-                Toast.makeText(activity, errorMsg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), errorMsg, Toast.LENGTH_SHORT).show()
             }
         })
 

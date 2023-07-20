@@ -2,6 +2,7 @@ package com.padicare.ui.forum
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -45,7 +47,9 @@ class ForumFragment : Fragment() {
 
         val root = binding.root
 
+        val colorStateList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white))
 
+        binding.btnAddPost.imageTintList = colorStateList
 
         return root
     }

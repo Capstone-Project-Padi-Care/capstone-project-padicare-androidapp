@@ -54,6 +54,10 @@ class EditProfileActivity : AppCompatActivity() {
             optionImage()
         }
 
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
+
         binding.changeImage.setOnClickListener { submitPhoto() }
     }
 

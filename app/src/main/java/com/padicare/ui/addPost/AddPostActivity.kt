@@ -54,6 +54,16 @@ class AddPostActivity : AppCompatActivity() {
             )
         }
 
+        val imageFromResult : String? = intent.getStringExtra("image")
+        val titleFromResult : String? = intent.getStringExtra("title")
+
+        if(imageFromResult !== null && titleFromResult !== null) {
+            binding.imgStory.setImageURI(Uri.parse(imageFromResult))
+            binding.tfTitle.setText(titleFromResult)
+            getFile = uriToFile(Uri.parse(imageFromResult), this)
+        }
+
+
         binding.photoLayout.setOnClickListener { optionImage() }
         binding.btnUpload.setOnClickListener { uploadPost() }
     }
@@ -64,7 +74,7 @@ class AddPostActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == AddPostActivity.REQUEST_CODE_PERMISSIONS) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
                     this,
@@ -223,9 +233,6 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
-    private fun toResultScan() {
-
-    }
 
     companion object {
 

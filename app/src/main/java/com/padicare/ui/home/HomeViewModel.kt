@@ -37,6 +37,9 @@ class HomeViewModel(private val preferences: CredentialPreferences) : ViewModel(
 
     private val _postData = MutableLiveData<PostItem?>()
     val postData : LiveData<PostItem?> = _postData
+
+
+
     fun getUserFromApi(id: String) {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getUser(id)
@@ -67,6 +70,9 @@ class HomeViewModel(private val preferences: CredentialPreferences) : ViewModel(
 
         })
     }
+
+
+
     fun getUpdatedPost() {
         val client = ApiConfig.getApiService().getUpdatedPost(1, 1)
         client.enqueue(object : Callback<GetPostsResponse> {
